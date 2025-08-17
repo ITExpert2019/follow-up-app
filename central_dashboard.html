@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>لوحة تحكم المستوى المركزي</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f7f9fc;
+      margin: 0; padding: 0;
+      direction: rtl;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    /* رأس الصفحة (مطابق لصفحة الترحيب) */
+    .header-card {
+      background-color: #005792;
+      color: white;
+      text-align: center;
+      padding: 12px 8px;
+    }
+    .header-card h1 { margin: 0; font-size: 20px; }
+    .header-card h2 { margin: 0; font-size: 14px; color: #d4eaf7; }
+
+    .container {
+      max-width: 980px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.08);
+      padding: 18px;
+      box-sizing: border-box;
+      flex: 1 0 auto;
+    }
+
+    h3 {
+      margin: 0 0 18px 0;
+      text-align: center;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .entity-info {
+      text-align: center;
+      margin: 12px 0 18px 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #e0e6eb;
+      padding: 10px 8px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    th {
+      background-color: #003366;
+      color: white;
+      font-weight: 700;
+    }
+
+    .message {
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .success { color: green; }
+    .error { color: #c82333; }
+
+    button.action {
+      background-color: #006699;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      margin: 0 4px;
+      transition: background-color 0.3s ease;
+    }
+    button.action:hover {
+      background-color: #00507a;
+    }
+    button.reject {
+      background-color: #dc3545;
+    }
+    button.reject:hover {
+      background-color: #b52b3a;
+    }
+    .footer {
+      background-color: #004066;
+      color: white; padding: 8px;
+      text-align: center; font-size: 14px;
+      flex-shrink: 0;
+    }
+    .small {
+      font-size: 12px; color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-card">
+    <h1>الإدارة المركزية للتخطيط والمتابعة</h1>
+    <h2>مصلحة الري</h2>
+  </div>
+
+  <div class="container">
+    <h3>لوحة تحكم المستوى المركزي</h3>
+
+    <div class="entity-info">
+      مرحباً <span id="userName"></span> - الجهة: <span id="userEntity"></span>
+    </div>
+
+    <div id="message" class="message small"></div>
+
+    <table id="pendingTable" aria-live="polite">
+      <thead>
+        <tr>
+          <th>الجهة</th>
+          <th>الإدارة</th>
+          <th>اسم العملية</th>
+          <th>اسم الحقل</th>
+          <th>القيمة القديمة</th>
+          <th>القيمة الجديدة</th>
+          <th>تاريخ آخر تعديل</th>
+          <th>الحالة</th>
+          <th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- سيتم ملؤه برمجياً -->
+      </tbody>
+    </table>
+
+    <div style="text-align:center; margin-top:10px;">
+      <button onclick="logout()" class="action">خروج</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="marquee">تصميم وتنفيذ م/ محمد الرافعي المكباتي</span>
+  </div>
+
+<script>
+  // حقن آمن للمتغيرات من القالب (لا تغير هذه الأسطر)
+  const email = <?!= JSON.stringify(email || "") ?>;
+  const userName = <?!= JSON.stringify(userName || "") ?>;
+  const userEntity = <?!= JSON.stringify(userEntity || "") ?>;
+  const pendingUpdates = <?!= JSON.stringify(pendingUpdates || []) ?>;
+
+  document.getElementById("userName").textContent = userName || "";
+  document.getElementById("userEntity").textContent = userEntity || "";
+
+  function formatMaybeDate(val) {
+    if (!val) return "";
+    try {
+      const d = new Date(val);
+      if (!isNaN(d)) return d.toLocaleString();
+    } catch(e) {}
+    return String(val);
+  }
+
+  function loadPending() {
+    const messageDiv = document.getElementById("message");
+    const tbody = document.querySelector("#pendingTable tbody");
+    tbody.innerHTML = "";
+
+    if (!pendingUpdates || pendingUpdates.length === 0) {
+      messageDiv.textContent = "لا توجد تعديلات قيد المراجعة حاليا.";
+      messageDiv.className = "message";
+      return;
+    }
+
+    messageDiv.textContent = "";
+    messageDiv.className = "message";
+
+    pendingUpdates.forEach(row => {
+      const tr = document.createElement("tr");
+      const dateStr = formatMaybeDate(row.date);
+
+      tr.innerHTML = `
+        <td>${row.entity || ""}</td>
+        <td>${row.department || ""}</td>
+        <td>${row.operationName || ""}</td>
+        <td>${row.fieldName || ""}</td>
+        <td>${row.oldValue || ""}</td>
+        <td>${row.newValue || ""}</td>
+        <td>${dateStr}</td>
+        <td>${row.status || ""}</td>
+        <td>
+          <button class="action" onclick="processReview(${row.rowNumber}, true)">قبول</button>
+          <button class="action reject" onclick="processReview(${row.rowNumber}, false)">رفض</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function processReview(rowNumber, accept) {
+    if (!rowNumber) {
+      alert("رقم السجل غير صالح");
+      return;
+    }
+    const confirmMsg = accept ? "هل تريد قبول هذا التعديل؟" : "هل تريد رفض هذا التعديل؟";
+    if (!confirm(confirmMsg)) return;
+
+    google.script.run.withSuccessHandler(function(res) {
+      const messageDiv = document.getElementById("message");
+      if (res && res.success) {
+        messageDiv.textContent = res.message || "تمت العملية.";
+        messageDiv.className = "message success";
+        setTimeout(loadPending, 600);
+      } else {
+        messageDiv.textContent = (res && res.message) ? res.message : "حدث خطأ.";
+        messageDiv.className = "message error";
+      }
+    }).reviewUpdate(rowNumber, accept);
+  }
+
+  function logout() {
+    google.script.run.withSuccessHandler(function(url) {
+      window.open(url + "?page=exit", "_top");
+    }).getScriptUrl();
+  }
+
+  window.onload = loadPending;
+</script>
+
+</body>
+</html>

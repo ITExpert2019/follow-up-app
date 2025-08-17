@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>تسجيل الدخول</title>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    /* ====== رأس الصفحة ====== */
+    .header-card {
+      background-color: #005792;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .header-card h1 { margin: 0; font-size: 20px; }
+    .header-card h2 { margin: 0; font-size: 16px; color: #d4eaf7; }
+
+    /* ====== منطقة المحتوى ====== */
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-card {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgb(0 0 0 / 0.15);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 25px;
+      color: #003366;
+      font-weight: bold;
+    }
+    label {
+      display: block;
+      text-align: right;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 16px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      background-color: #004466;
+      color: white;
+      padding: 14px;
+      font-size: 18px;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #002233;
+    }
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+      color: red;
+      min-height: 22px;
+    }
+
+    /* ====== تذييل الصفحة ====== */
+    .footer {
+      background-color: #004066;
+      color: white;
+      padding: 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .marquee {
+      display: inline-block;
+      animation: marquee 15s linear infinite;
+    }
+    @keyframes marquee {
+      from { transform: translateX(100%); }
+      to { transform: translateX(-100%); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- رأس الصفحة -->
+  <div class="header-card">
+    <h1>الإدارة المركزية للتخطيط والمتابعة</h1>
+    <h2>مصلحة الري</h2>
+  </div>
+
+  <!-- منطقة تسجيل الدخول -->
+  <div class="content">
+    <div class="login-card">
+      <h2>تسجيل الدخول</h2>
+
+      <label for="emailInput">البريد الإلكتروني</label>
+      <input type="email" id="emailInput" placeholder="أدخل البريد الإلكتروني" />
+
+      <label for="passwordInput">كلمة المرور</label>
+      <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" />
+
+      <button onclick="login()">دخول</button>
+
+      <div class="message" id="msg"></div>
+    </div>
+  </div>
+
+  <!-- تذييل الصفحة -->
+  <div class="footer">
+    <span class="marquee">تسجيل الدخول باستخدام البريد الاليكتروني وكلمة المرور</span>
+  </div>
+
+  <script>
+    function login() {
+      const email = document.getElementById("emailInput").value.trim();
+      const password = document.getElementById("passwordInput").value.trim();
+      const msg = document.getElementById("msg");
+
+      if (!email || !password) {
+        msg.textContent = "يرجى إدخال البريد وكلمة المرور.";
+        return;
+      }
+
+      msg.textContent = "جاري التحقق...";
+
+      google.script.run.withSuccessHandler(function (res) {
+        if (res.success) {
+          window.location.href = res.redirectUrl;
+        } else {
+          msg.textContent = res.message || "خطأ في تسجيل الدخول.";
+        }
+      }).checkLogin(email, password);
+    }
+  </script>
+
+</body>
+</html>

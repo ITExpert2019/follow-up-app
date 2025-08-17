@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>متابعة تنفيذ الخطة الاستثمارية</title>
+<style>
+  body {
+    font-family: 'Cairo', sans-serif;
+    margin: 0; padding: 0;
+    background-color: #f0f4f8;
+    display: flex; flex-direction: column;
+    height: 100vh; justify-content: space-between;
+  }
+  .header-card {
+    background-color: #005792;
+    color: white;
+    padding: 15px;
+    text-align: center;
+  }
+  .header-card h1 { margin: 0; font-size: 20px; }
+  .header-card h2 { margin: 0; font-size: 16px; color: #d4eaf7; }
+  .content {
+    flex-grow: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .content h3 {
+    font-size: 26px; margin-bottom: 20px;
+    color: #333;
+  }
+  .btn {
+    background-color: #007bff;
+    color: white; padding: 12px 20px;
+    border: none; border-radius: 6px;
+    font-size: 16px; cursor: pointer;
+  }
+  .footer {
+    background-color: #004066;
+    color: white; padding: 8px;
+    text-align: center; font-size: 14px;
+  }
+  .marquee {
+    display: inline-block; animation: marquee 15s linear infinite;
+  }
+  @keyframes marquee {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header-card">
+  <h1>الإدارة المركزية للتخطيط والمتابعة</h1>
+  <h2>مصلحة الري</h2>
+</div>
+
+<div class="content">
+  <h3>متابعة تنفيذ الخطة الاستثمارية</h3>
+  <button class="btn" onclick="start()">بدء الاستخدام</button>
+</div>
+
+<div class="footer">
+  <span class="marquee">تصميم وتنفيذ م/ محمد الرافعي المكباتي</span>
+</div>
+
+<script>
+  function start() {
+    google.script.run.withSuccessHandler(function(url) {
+      window.open(url + '?page=login', '_top');
+    }).getScriptUrl();
+  }
+</script>
+
+</body>
+</html>

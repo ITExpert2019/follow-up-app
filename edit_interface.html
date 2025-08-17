@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8" />
+<title>تعديل البيانات</title>
+<style>
+  /* --- تصميم الرأس --- */
+  header {
+     background-color: #005792;
+    color: white;
+    padding: 16px 24px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  header h2 {
+    margin: 4px 0 0;
+    font-weight: 400;
+    font-size: 16px;
+    opacity: 0.8;
+  }
+
+  /* --- تصميم التذييل --- */
+  footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background-color: #004066;
+    color: white;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    height: 28px;
+    overflow: hidden;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
+  }
+  .marquee {
+    white-space: nowrap;
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 15s linear infinite;
+    font-size: 14px;
+    line-height: 28px;
+  }
+  @keyframes marquee {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+  }
+
+  /* --- تصميم الصفحة --- */
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 120px 20px 48px; /* إضافة مساحة للرأس والتذييل */
+    display: flex;
+    justify-content: center;
+  }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 720px;
+    width: 100%;
+    padding: 24px 32px;
+    box-sizing: border-box;
+  }
+  .card-header {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+    color: #0d47a1;
+    border-bottom: 2px solid #0d47a1;
+    padding-bottom: 8px;
+  }
+  form {
+    width: 100%;
+  }
+  .operation-select {
+    margin-bottom: 24px;
+    width: 100%;
+  }
+  .columns {
+    display: flex;
+    gap: 40px;
+  }
+  .column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  label {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    user-select: none;
+  }
+  input[type="text"],
+  input[type="date"],
+  select {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+  input[type="text"]:focus,
+  input[type="date"]:focus,
+  select:focus {
+    border-color: #0d47a1;
+    outline: none;
+  }
+  input[readonly],
+  input[disabled] {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+  }
+  .buttons-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+  button {
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    user-select: none;
+    min-width: 140px;
+    transition: background-color 0.3s;
+  }
+  .save-btn {
+    background-color: #0d47a1;
+    color: #fff;
+  }
+  .save-btn:hover {
+    background-color: #083970;
+  }
+  .exit-btn {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  .exit-btn:hover {
+    background-color: #a02730;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>الإدارة المركزية للتخطيط والمتابعة</h1>
+  <h2>مصلحة الري</h2>
+</header>
+
+<div class="card">
+  <div class="card-header" id="deptTitle">تعديل بيانات</div>
+
+  <form id="editForm" onsubmit="event.preventDefault(); saveChanges();">
+
+    <div class="operation-select">
+      <label for="operationSelect">اختر العملية التفصيلية:</label>
+      <select id="operationSelect" required>
+        <option value="">-- اختر --</option>
+      </select>
+    </div>
+
+    <div class="columns">
+      <div class="column">
+        <div>
+          <label for="spentUntil">ما تم صرفه حتى 30/6/2025:</label>
+          <input type="text" id="spentUntil" inputmode="numeric" pattern="\d*" />
+        </div>
+        <div>
+          <label for="expectedSpent">المتوقع صرفه للعام المالي 2025/2026:</label>
+          <input type="text" id="expectedSpent" inputmode="numeric" pattern="\d*" />
+        </div>
+        <div>
+          <label for="currentContractValue">القيمة التعاقدية الحالية:</label>
+          <input type="text" id="currentContractValue" readonly />
+        </div>
+        <div>
+          <label for="modifiedChangeDate">تاريخ النهو المعدل:</label>
+          <input type="date" id="modifiedChangeDate" />
+        </div>
+      </div>
+
+      <div class="column">
+        <div>
+          <label for="executedUntil">ما تم تنفيذه حتى 30/6/2025:</label>
+          <input type="text" id="executedUntil" inputmode="numeric" pattern="\d*" />
+        </div>
+        <div>
+          <label for="spentFromJuly">المنصرف من 1/7/2025 حتى تاريخه:</label>
+          <input type="text" id="spentFromJuly" inputmode="numeric" pattern="\d*" />
+        </div>
+        <div>
+          <label for="modifiedContractValue">القيمة التعاقدية المعدلة:</label>
+          <input type="text" id="modifiedContractValue" inputmode="numeric" pattern="\d*" />
+        </div>
+        <div>
+          <label for="scheduledEndDate">تاريخ النهو المقرر:</label>
+          <input type="date" id="scheduledEndDate" readonly />
+        </div>
+      </div>
+    </div>
+
+    <div class="buttons-row">
+      <button type="button" class="exit-btn" onclick="exitPage()">خروج</button>
+      <button type="submit" class="save-btn">حفظ التعديلات</button>
+    </div>
+  </form>
+</div>
+
+<footer>
+  <div class="marquee">تعديل بيانات العمليات التفصيلية </div>
+</footer>
+
+<script>
+  const department = <?!= JSON.stringify(department || "") ?>;
+  let originalData = {};
+
+  function populateOperations(operations) {
+    const select = document.getElementById("operationSelect");
+    select.innerHTML = '<option value="">-- اختر --</option>';
+    operations.forEach(op => {
+      const option = document.createElement("option");
+      option.value = op;
+      option.textContent = op;
+      select.appendChild(option);
+    });
+  }
+
+  function fillForm(data) {
+    if (!data || data.error) {
+      alert(data.error || "خطأ في تحميل بيانات العملية");
+      return;
+    }
+
+    originalData = {
+      "ما تم صرفه حتى 30/6/2025": data.spendTill || "",
+      "ما تم تنفيذه حتى 30/6/2025": data.executeTill || "",
+      "المتوقع صرفه للعام المالي 2025/2026": data.expected || "",
+      "المنصرف من 1/7/2025 حتى تاريخه": data.spentFrom || "",
+      "القيمة التعاقدية الحالية": data.contractValue || "",
+      "القيمة التعاقدية المعدلة": data.modifiedContractValue || "",
+      "تاريخ النهو المعدل": data.modifiedEndDate || "",
+      "تاريخ النهو المقرر": data.scheduledEndDate || ""
+    };
+
+    document.getElementById("spentUntil").value = originalData["ما تم صرفه حتى 30/6/2025"];
+    document.getElementById("executedUntil").value = originalData["ما تم تنفيذه حتى 30/6/2025"];
+    document.getElementById("expectedSpent").value = originalData["المتوقع صرفه للعام المالي 2025/2026"];
+    document.getElementById("spentFromJuly").value = originalData["المنصرف من 1/7/2025 حتى تاريخه"];
+    document.getElementById("currentContractValue").value = originalData["القيمة التعاقدية الحالية"];
+    document.getElementById("modifiedContractValue").value = originalData["القيمة التعاقدية المعدلة"];
+    document.getElementById("modifiedChangeDate").value = originalData["تاريخ النهو المعدل"];
+    document.getElementById("scheduledEndDate").value = originalData["تاريخ النهو المقرر"];
+
+    // التحكم في الحقول القابلة للتعديل حسب الشهر (مثلاً)
+    const now = new Date();
+    const julyStart = new Date("2025-07-01T00:00:00");
+    const julyEnd = new Date("2025-07-31T23:59:59");
+    const isJuly = (now >= julyStart && now <= julyEnd);
+
+    // حقل صرف وتنفيذ حتى 30/6 مقيد بالتعديل فقط في يوليو
+    ["spentUntil", "executedUntil", "expectedSpent"].forEach(id => {
+      document.getElementById(id).readOnly = !isJuly;
+    });
+
+    // باقي الحقول مفتوحة دائماً
+    ["spentFromJuly", "modifiedContractValue", "modifiedChangeDate"].forEach(id => {
+      document.getElementById(id).readOnly = false;
+    });
+
+    document.getElementById("currentContractValue").readOnly = true;
+    document.getElementById("scheduledEndDate").readOnly = true;
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const titleEl = document.getElementById("deptTitle");
+    if (titleEl) titleEl.textContent = "تعديل بيانات: " + (department || "");
+
+    if (department) {
+      google.script.run.withSuccessHandler(populateOperations).getOperations(department);
+    }
+
+    document.getElementById("operationSelect").addEventListener("change", function () {
+      const opName = this.value;
+      if (!opName) return;
+
+      google.script.run.withSuccessHandler(function(data){
+        fillForm({
+          spendTill: data["صرف"],
+          executeTill: data["تنفيذ"],
+          expected: data["متوقع"],
+          spentFrom: data["صرف_حالي"],
+          contractValue: data["قيمة_تعاقدية"],
+          modifiedContractValue: data["تعاقد_معدل"],
+          modifiedEndDate: data["نهو_معدل"],
+          scheduledEndDate: data["نهو_مقرر"],
+          error: data.error
+        });
+      }).getOperationData(department, opName);
+    });
+  });
+
+  function saveChanges() {
+    const changedData = {};
+    try {
+      const newValues = {
+        "ما تم صرفه حتى 30/6/2025": document.getElementById("spentUntil").value.trim(),
+        "ما تم تنفيذه حتى 30/6/2025": document.getElementById("executedUntil").value.trim(),
+        "المتوقع صرفه للعام المالي 2025/2026": document.getElementById("expectedSpent").value.trim(),
+        "المنصرف من 1/7/2025 حتى تاريخه": document.getElementById("spentFromJuly").value.trim(),
+        "القيمة التعاقدية المعدلة": document.getElementById("modifiedContractValue").value.trim(),
+        "تاريخ النهو المعدل": document.getElementById("modifiedChangeDate").value.trim(),
+      };
+
+      for (const key in newValues) {
+        if (!newValues.hasOwnProperty(key)) continue;
+        const orig = originalData[key] || "";
+        const curr = newValues[key];
+        if (curr !== orig) {
+          changedData[key] = curr;
+        }
+      }
+
+      changedData.operation = document.getElementById("operationSelect").value;
+      changedData.department = department;
+
+      if (!changedData.operation) {
+        alert("يرجى اختيار العملية التفصيلية أولاً");
+        return;
+      }
+
+      if (Object.keys(changedData).length <= 2) {
+        alert("لم يتم تعديل أي حقل");
+        return;
+      }
+
+      google.script.run.withSuccessHandler(function(res){
+        alert(res.message || res);
+        if (res.success) {
+          google.script.run.withSuccessHandler(function(data){
+            fillForm({
+              spendTill: data["صرف"],
+              executeTill: data["تنفيذ"],
+              expected: data["متوقع"],
+              spentFrom: data["صرف_حالي"],
+              contractValue: data["قيمة_تعاقدية"],
+              modifiedContractValue: data["تعاقد_معدل"],
+              modifiedEndDate: data["نهو_معدل"],
+              scheduledEndDate: data["نهو_مقرر"],
+              error: data.error
+            });
+          }).getOperationData(department, changedData.operation);
+        }
+      }).updateData(changedData);
+    } catch(e) {
+      alert("خطأ أثناء الحفظ: " + e.message);
+    }
+  }
+
+  function exitPage() {
+    window.location.href = "?page=login";
+  }
+</script>
+
+</body>
+</html>
